@@ -1,0 +1,253 @@
+
+==================================================
+  ##SQL Code to Add Randomized Data - TABLE 01##
+==================================================
+
+-- Variables for date range
+DO $$
+DECLARE 
+    start_date DATE := '2024-01-01';
+    end_date DATE := '2024-05-31';
+	heater_number INT := 1;
+	heater_pass INT := 1;
+    heater_date DATE;
+    heater_cot INT;
+    heater_flow INT;
+BEGIN
+    -- Generate random data
+	WHILE heater_number <=2 LOOP
+	
+		WHILE heater_pass <=3 LOOP
+	
+			WHILE start_date <= end_date LOOP
+			heater_date := start_date;
+        	heater_cot := floor(random() * (501 - 498 + 1) + 498); -- Randomly choose between 498 and 501 for heater_cot
+        	heater_flow := floor(random() * (1000 - 750 + 1) + 750); -- Randomly choose between 750 and 1000 for heater_flow
+        
+        	-- Insert the generated data into T_01
+        	INSERT INTO T_01 (heater_number, heater_pass, heater_date, heater_cot, heater_flow)
+        	VALUES (heater_number, heater_pass, heater_date, heater_cot, heater_flow);
+        
+        	start_date := start_date + INTERVAL '1 day'; -- Move to the next day
+			
+			END LOOP
+			
+			start_date := '2024-01-01';
+			heater_pass := heater_pass + 1;
+	
+		END LOOP
+		
+		start_date := '2024-01-01';
+		heater_pass := 1;
+		heater_number := heater_number +1;
+	
+	END LOOP
+
+END $$;
+
+-- Output the generated data
+SELECT * FROM T_01;
+
+-- Optionally to reset the data
+--TRUNCATE TABLE T_01 RESTART IDENTITY;
+
+==================================================
+  ##SQL Code to Add Randomized Data - TABLE 02##
+==================================================
+
+-- Variables for random data generation
+DO $$
+DECLARE 
+    heater_number INT;
+    heater_pass INT;
+    spalling_date DATE;
+    spalling_SOR INT;
+    spalling_EOR INT;
+    start_date DATE := '2024-01-01';
+    end_date DATE := '2024-05-31';
+BEGIN
+    -- Generate random data
+    FOR heater_number IN 1..2 LOOP
+        FOR heater_pass IN 1..3 LOOP
+            FOR i IN 1..5 LOOP
+                spalling_date := date_trunc('day', timestamp '2024-01-01' + (random() * (end_date - start_date)) * interval '1 day');
+                spalling_SOR := floor(random() * (690 - 650 + 1) + 650);
+                spalling_EOR := floor(random() * (610 - 550 + 1) + 550);
+                
+                -- Insert the generated data into the temporary table
+                INSERT INTO T_02 (heater_number, heater_pass, spalling_date, spalling_SOR, spalling_EOR)
+                VALUES (heater_number, heater_pass, spalling_date, spalling_SOR, spalling_EOR);
+            END LOOP;
+        END LOOP;
+    END LOOP;
+END $$;
+
+-- Output the generated data
+SELECT * FROM T_02;
+
+-- Optionally to reset the data
+--TRUNCATE TABLE T_02 RESTART IDENTITY
+
+==================================================
+  ##SQL Code to Add Randomized Data - TABLE 03##
+==================================================
+
+-- Variables for random data generation
+DO $$
+DECLARE 
+    drum_number INT;
+    drum_cycle INT;
+    foam_level INT;
+    coke_level INT;
+    drum_pressure INT;
+    drum_dp INT;
+    drum_temperature INT;
+    switch_temperature INT;
+	T_04_id INT := 1;
+    antifoam_rate INT;
+BEGIN
+    -- Generate random data
+    FOR drum_number IN 1..4 LOOP
+        FOR drum_cycle IN 1..150 LOOP
+            foam_level := floor(random() * 61); -- Randomly choose between 0 and 60 for foam_level
+            coke_level := floor(random() * 86); -- Randomly choose between 0 and 85 for coke_level
+            drum_pressure := floor(random() * (80 - 55 + 1) + 55); -- Randomly choose between 55 and 80 for drum_pressure
+            drum_dp := floor(random() * 4); -- Randomly choose between 0 and 3 for drum_dp
+            drum_temperature := floor(random() * (460 - 390 + 1) + 390); -- Randomly choose between 390 and 460 for drum_temperature
+            switch_temperature := floor(random() * (270 - 210 + 1) + 210); -- Randomly choose between 210 and 270 for switch_temperature
+            antifoam_rate := floor(random() * 10 + 1); -- Randomly choose between 1 and 10 for antifoam_rate
+            
+            -- Insert the generated data into the table
+            INSERT INTO T_03 (drum_cycle, drum_number, foam_level, coke_level, drum_pressure, drum_dp, drum_temperature, switch_temperature, T_04_id, antifoam_rate)
+            VALUES (drum_cycle, drum_number, foam_level, coke_level, drum_pressure, drum_dp, drum_temperature, switch_temperature, 1, antifoam_rate);
+        END LOOP;
+    END LOOP;
+END $$;
+
+-- Output the generated data
+SELECT * FROM T_03;
+
+-- Optionally to reset the data
+--TRUNCATE TABLE T_03 RESTART IDENTITY
+
+==================================================
+  ##SQL Code to Add Randomized Data - TABLE 04##
+==================================================
+
+INSERT INTO T_04 (t_04_delete_ind, chemical_name, chemical_service, chemical_supplier)
+VALUES 
+    (false, 'FS 5000', 'Antifoam', 'Baker Hughes'),
+    (false, 'SR 1758', 'Antifoam', 'Dorf Ketal');
+
+-- Output the generated data
+SELECT * FROM T_04;
+
+-- Optionally to reset the data
+-- TRUNCATE TABLE T_04 RESTART IDENTITY;
+
+==================================================
+  ##SQL Code to Add Randomized Data - TABLE 05##
+==================================================
+
+-- Variables for date range and yield streams
+DO $$
+DECLARE 
+    start_date DATE := '2024-01-01';
+    end_date DATE := '2024-05-31';
+    curr_date DATE;
+    yield_streams TEXT[] := ARRAY['Sour Coker Fuel Gas', 'Sour Coker LPG', 'Coker Naphtha', 'Light Coker Gas Oil', 'Heavy Coker Gas Oil', 'Petcoke'];
+    yield_stream VARCHAR(50);
+    yield_amount INT;
+BEGIN
+    -- Generate random data
+    curr_date := start_date;
+    WHILE curr_date <= end_date LOOP
+        FOREACH yield_stream IN ARRAY yield_streams LOOP
+            yield_amount := floor(random() * (2200 - 200 + 1) + 200); -- Randomly choose between 200 and 2200 for yield_amount
+            
+            -- Insert the generated data into the table
+            INSERT INTO T_05 (yield_date, yield_stream, yield_amount)
+            VALUES (curr_date, yield_stream, yield_amount);
+        END LOOP;
+        curr_date := curr_date + INTERVAL '1 day'; -- Move to the next day
+    END LOOP;
+END $$;
+
+-- Output the generated data
+SELECT * FROM T_05;
+
+-- Optionally to reset the data
+-- TRUNCATE TABLE T_05 RESTART IDENTITY;
+
+
+==================================================
+  ##SQL Code to Add Randomized Data - TABLE 06##
+==================================================
+
+-- Generate 4 random records
+DO $$
+DECLARE
+    flaring_date DATE;
+    flaring_amount INT;
+BEGIN
+    FOR i IN 1..4 LOOP
+        flaring_date := '2024-01-01'::DATE + (random() * (151))::INT; -- Random date between January 1, 2024, and May 31, 2024
+        flaring_amount := floor(random() * (2000 - 1000 + 1) + 1000); -- Randomly choose between 1000 and 2000 for flaring_amount
+        
+        -- Insert the generated data into the table
+        INSERT INTO T_06 (flaring_date, flaring_amount)
+        VALUES (flaring_date, flaring_amount);
+    END LOOP;
+END $$;
+
+-- Output the generated data
+SELECT * FROM T_06;
+-- Optionally to reset the data
+-- TRUNCATE TABLE T_06 RESTART IDENTITY;
+
+==================================================
+  ##SQL Code to Add Randomized Data - TABLE 07##
+==================================================
+
+-- Variables for date range and slopping qualities
+DO $$
+DECLARE 
+    start_date DATE := '2024-01-01';
+    end_date DATE := '2024-05-31';
+	slopping_date DATE;
+    slopping_qualities TEXT[] := ARRAY['Coker Naphtha', 'Light Coker Gas Oil', 'Heavy Coker Gas Oil', 'HVGO or VTB'];
+    slopping_quality VARCHAR(50);
+    slopping_amount INT;
+    slopping_disposition VARCHAR(50);
+    disposition_options TEXT[];
+BEGIN
+    -- Generate random data
+    FOREACH slopping_quality IN ARRAY slopping_qualities LOOP
+        FOR i IN 1..3 LOOP
+            slopping_date := start_date + (floor(random() * (end_date - start_date + 1)) || ' days')::INTERVAL; -- Random date between start_date and end_date
+            slopping_amount := floor(random() * 1001); -- Randomly choose between 0 and 1000 for slopping_amount
+            
+            -- Determine slopping_disposition based on slopping_quality
+            CASE 
+                WHEN slopping_quality = 'Coker Naphtha' THEN
+                    disposition_options := ARRAY['Tank-1', 'Tank-2'];
+                WHEN slopping_quality IN ('Light Coker Gas Oil', 'Heavy Coker Gas Oil') THEN
+                    disposition_options := ARRAY['Tank-3', 'Tank-4', 'Tank-5'];
+                WHEN slopping_quality = 'HVGO or VTB' THEN
+                    disposition_options := ARRAY['Tank-6', 'Tank-7'];
+            END CASE;
+            
+            -- Randomly select one disposition from the array
+            slopping_disposition := disposition_options[1 + floor(random() * array_length(disposition_options, 1))];
+            
+            -- Insert the generated data into the table
+            INSERT INTO T_07 (slopping_date, slopping_quality, slopping_amount, slopping_disposition)
+            VALUES (slopping_date, slopping_quality, slopping_amount, slopping_disposition);
+        END LOOP;
+    END LOOP;
+END $$;
+
+-- Output the generated data
+SELECT * FROM T_07;
+-- Optionally to reset the data
+-- TRUNCATE TABLE T_07 RESTART IDENTITY;

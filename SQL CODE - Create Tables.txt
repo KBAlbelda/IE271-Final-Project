@@ -1,0 +1,78 @@
+/* 
+
+===========================================
+  ##SQL Code to Add Database Completely##
+===========================================
+
+  ## LIST OF TABLES ##
+
+  01 - COKER HEATERS
+  02 - SPALLING RECORDS
+  03 - COKE DRUMS
+  04 - CHEMICALS
+  05 - YIELDS
+  06 - FLARING
+  07 - SLOPPING
+ 
+*/
+
+CREATE TABLE T_01(
+	T_01_ID SERIAL PRIMARY KEY NOT NULL,
+	T_01_DELETE_IND BOOL DEFAULT FALSE NOT NULL,
+	Heater_Number INT,
+	Heater_Pass INT,
+	Heater_Date DATE,
+	Heater_COT FLOAT,
+	Heater_Flow FLOAT);
+
+CREATE TABLE T_02(
+	T_02_ID SERIAL PRIMARY KEY NOT NULL,
+	T_02_DELETE_IND BOOL DEFAULT FALSE NOT NULL,
+	Spalling_Date DATE,
+	Heater_Number INT,
+	Heater_Pass INT,
+	Spalling_SOR FLOAT,
+	Spalling_EOR FLOAT);
+
+CREATE TABLE T_03(
+	T_03_ID SERIAL PRIMARY KEY NOT NULL,
+	T_03_DELETE_IND BOOL DEFAULT FALSE NOT NULL,
+	Drum_Number INT,
+	Drum_Cycle INT,
+	Foam_Level FLOAT,
+	Coke_Level FLOAT,
+	Drum_Pressure FLOAT,
+	Drum_DP FLOAT,
+	Drum_Temperature FLOAT,
+	Switch_Temperature FLOAT,
+	T_04_ID SERIAL,
+	Antifoam_Rate FLOAT);
+
+CREATE TABLE T_04(
+	T_04_ID SERIAL PRIMARY KEY NOT NULL,
+	T_04_DELETE_IND BOOL DEFAULT FALSE NOT NULL,
+	Chemical_Name VARCHAR(50),
+	Chemical_Service VARCHAR(50),
+	Chemical_Supplier VARCHAR(100));
+
+CREATE TABLE T_05(
+	T_05_ID SERIAL PRIMARY KEY NOT NULL,
+	T_05_DELETE_IND BOOL DEFAULT FALSE NOT NULL,
+	Yield_Date DATE,
+	Yield_Stream VARCHAR(50),
+	Yield_Amount FLOAT);
+
+CREATE TABLE T_06(
+	T_06_ID SERIAL PRIMARY KEY NOT NULL,
+	T_06_DELETE_IND BOOL DEFAULT FALSE NOT NULL,
+	Flaring_Date DATE,
+	Flaring_Amount FLOAT);
+
+CREATE TABLE T_07(
+	T_07_ID SERIAL PRIMARY KEY NOT NULL,
+	T_07_DELETE_IND BOOL DEFAULT FALSE NOT NULL,
+	Slopping_Date DATE,
+	Slopping_Quality VARCHAR(50),
+	Slopping_Amount FLOAT,
+	Slopping_Disposition VARCHAR(50));
+
